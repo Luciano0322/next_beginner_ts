@@ -4,6 +4,8 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: ["img.pokemondb.net"],
+    loader: "custom",
+    path: "/",
   }
 }
 

@@ -1,6 +1,8 @@
 import { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head'
 import Image from 'next/image';
+import Link from 'next/link';
+import imageLoader from '../imageLoader';
 import { PokemonListProps, PokemonNameUrl } from '../types';
 
 const Home: NextPage<{pokemons: PokemonNameUrl[]}> = ({ pokemons }) => {
@@ -20,13 +22,17 @@ const Home: NextPage<{pokemons: PokemonNameUrl[]}> = ({ pokemons }) => {
         <div className="grid grid-cols-4 gap-4">
           {pokemons.map((pokemon) => (
             <div key={pokemon.url}>
+              <Link href={`/pokemons/${pokemon.name}`}>
+                <p>{pokemon.name}</p>
+              </Link>
               <Image
+                loader={imageLoader}
+                unoptimized
                 alt={pokemon.name}
                 src={`https://img.pokemondb.net/artwork/large/${pokemon.name}.jpg`}
                 width={200}
                 height={150}
               />
-              <p>{pokemon.name}</p>
             </div>
           ))}
         </div>
