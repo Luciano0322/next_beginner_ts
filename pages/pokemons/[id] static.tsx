@@ -1,13 +1,8 @@
-import { GetServerSideProps } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import imageLoader from "../../imageLoader";
 import { PokemonByName, PokemonListProps } from "../../types";
 
 function PokemonPage({pokemon}: {pokemon: PokemonByName.RootObject}) {
-  const router = useRouter();
-  console.log(router.query.id);
-  
   return (
     <>
       <div>Pokemon page</div>
@@ -31,10 +26,20 @@ function PokemonPage({pokemon}: {pokemon: PokemonByName.RootObject}) {
     </>
   );
 }
+// for 生成靜態頁面
+export async function getStaticPaths() {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20&offset=0');
+  const { results }:PokemonListProps = await res.json();
+  return {
+    paths: results.map((pokemon) => {
+      return { params: { id: pokemon.name } }
+    }),
+    fallback: false
+  }
+}
 
-// 如果用了getServerSideProps 就不能再採 static mode
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${context.query.id}`)
+export async function getStaticProps({ params }: { params: { id: string }}) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${params.id}`)
   const pokemon = await res.json();
   return {
     props: {
